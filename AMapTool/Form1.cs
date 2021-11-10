@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;       //添加类对COM可见-ComVisibleAttribute(true)/ 
 using System.IO;
 using System.Threading;
+using System.Collections;
 
 namespace AMapTool
 {
@@ -28,6 +29,7 @@ namespace AMapTool
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            ComboBoxInit();
             string str_url = Application.StartupPath + "\\Amap.html";
             Uri url = new Uri(str_url);
             webBrowser1.Url = url;
@@ -55,12 +57,9 @@ namespace AMapTool
         private void openTraceFileButton_Click(object sender, EventArgs e)
         {
             traceFileName = OpenFiles();
+            sr = new StreamReader(traceFileName);
             dirTextBox.Text = traceFileName;
         }
-        //public double lon = 121.08820638;
-        //public double lat = 38.89516914;
-        //public int stimFlag = 1;
-        //public bool isFirstStart = true;
         //数据格式
         struct wgs84LonLatStimStart
         {
@@ -89,7 +88,7 @@ namespace AMapTool
             }
         }
         //判断文件格式
-        public bool isJudgeDataStyle(List<string> dataList, bool isFile)
+        public bool isJudgeDataStyle(List<string> dataList, bool dataNum)
         {
             try
             {
@@ -103,9 +102,10 @@ namespace AMapTool
                 {
                     return false;
                 }
-                if(isFile == true)
+                //true为三个数据 false为两个数据
+                if(dataNum == true)
                 {
-                    if ((Convert.ToInt16(dataList[2]) > 4) || (Convert.ToDouble(dataList[0]) < 0))
+                    if ((Convert.ToInt16(dataList[2]) > 5) || (Convert.ToDouble(dataList[0]) < 0))
                     {
                         return false;
                     }
@@ -121,7 +121,26 @@ namespace AMapTool
             }
  
         }
+
         StreamReader sr;
+
+        /// <summary>
+        /// 判断是否加入刺激点的模式选择
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public bool dataMode(List<string> list)
+        {
+            switch (list.Count)
+            {
+                case 2: return false; break;
+                case 3: return true; break;
+                default: return true;
+            }
+
+        }
+
+
         private void drawTraceStimButton_Click(object sender, EventArgs e)
         {
             object[] objects = new object[5];
@@ -133,64 +152,87 @@ namespace AMapTool
             {
                 return;
             }
-            richTextBox1.Clear();
+            LogRichTextBox.Clear();
 
             string content;
             drawTraceStimButton.Enabled = false;
             clearTraceStimButton.Enabled = false;
-            sr = new StreamReader(traceFileName);
-            while ((content = sr.ReadLine()) != null)
+            try
             {
-                i++;
-                List<string> list = new List<string>(content.Split(','));
-                if (isJudgeDataStyle(list, true) == false)
+                //sr = new StreamReader(traceFileName);
+                while ((content = sr.ReadLine()) != null)
                 {
-                    MessageBox.Show("请打开数据格式正确的文件", "错误");
-                    list.Clear();
-                    clearTraceStimButton.Enabled = true;
-                    drawTraceStimButton.Enabled = true;
-                    return;
-                }
+                    i++;
+                    //数据以逗号分隔选取 
+                    List<string> list = new List<string>(content.Split(','));
+                    //判断数据格式是否正确
+                    if (isJudgeDataStyle(list, dataMode(list)) == false)
+                    {
+                        MessageBox.Show("请打开数据格式正确的文件", "错误");
+                        list.Clear();
+                        clearTraceStimButton.Enabled = true;
+                        drawTraceStimButton.Enabled = true;
+                        return;
+                    }
+                    //进行数据转换
+                    tempLon = Convert.ToDouble(list[0]);
+                    tempLat = Convert.ToDouble(list[1]);
 
-                tempLon = Convert.ToDouble(list[0]);
-                tempLat = Convert.ToDouble(list[1]);
-                tempStimFlag = Convert.ToInt16(list[2]);
-                wgs84lonlat.lon = (GPSChange.WGS84_to_GCJ02(tempLat, tempLon)).lng;
-                wgs84lonlat.lat = (GPSChange.WGS84_to_GCJ02(tempLat, tempLon)).lat;
-                wgs84lonlat.stimFlag = tempStimFlag;
-                if (i == 1)
-                {
-                    wgs84lonlat.isFirstStart = true;
-                }
-                else
-                {
-                    wgs84lonlat.isFirstStart = false;
+                    wgs84lonlat.lon = ConvertGPS.gps84_To_Gcj02(new PointLatLng(tempLat, tempLon)).Lng; 
+                    wgs84lonlat.lat = ConvertGPS.gps84_To_Gcj02(new PointLatLng(tempLat, tempLon)).Lat;
+                    //判断数据格式 带或者不带刺激点
+                    if (dataMode(list))
+                    {
+                        tempStimFlag = Convert.ToInt16(list[2]);
+                        wgs84lonlat.stimFlag = tempStimFlag;
+                    }
+                    else
+                    {
+                        wgs84lonlat.stimFlag = 0;
+                    }
+                    //是不是第一次
+                    if (i == 1)
+                    {
+                        wgs84lonlat.isFirstStart = true;
+                    }
+                    else
+                    {
+                        wgs84lonlat.isFirstStart = false;
+                    }
+                    objects[0] = wgs84lonlat.lon;
+                    objects[1] = wgs84lonlat.lat;
+                    objects[2] = wgs84lonlat.stimFlag;
+                    objects[3] = wgs84lonlat.isFirstStart;
+                    objects[4] = false;
+                    if (isFormClosed == true)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        LogRichTextBox.AppendText(content + "\n");
+                        webBrowser1.Document.InvokeScript("drawTraceAndStim", objects);//传参交互
+                    }
+                    Delay(1);
+                    list.Clear();
                 }
                 objects[0] = wgs84lonlat.lon;
                 objects[1] = wgs84lonlat.lat;
                 objects[2] = wgs84lonlat.stimFlag;
-                objects[3] = wgs84lonlat.isFirstStart;
-                objects[4] = false;
-                if (isFormClosed == true)
-                {
-                    return;
-                }
-                else {
-                    richTextBox1.AppendText(content + "\n");
-                    webBrowser1.Document.InvokeScript("drawTraceAndStim", objects);
-                }
-                Delay(1);
-                list.Clear();
+                objects[3] = false;//
+                objects[4] = true;//最后一次读数据将第四位改为true
+                webBrowser1.Document.InvokeScript("drawTraceAndStim", objects);
+                MessageBox.Show("轨迹绘制完毕", "完成");
+                sr.Close();
+                drawTraceStimButton.Enabled = true;
+                clearTraceStimButton.Enabled = true;
             }
-            objects[0] = wgs84lonlat.lon;
-            objects[1] = wgs84lonlat.lat;
-            objects[2] = wgs84lonlat.stimFlag;
-            objects[3] = false;
-            objects[4] = true;
-            webBrowser1.Document.InvokeScript("drawTraceAndStim", objects);
-            MessageBox.Show("轨迹绘制完毕", "完成");
-            drawTraceStimButton.Enabled = true;
-            clearTraceStimButton.Enabled = true;
+            catch {
+                drawTraceStimButton.Enabled = true;
+                clearTraceStimButton.Enabled = true;
+                sr.Close();
+            }
+
         }
 
         private void clearTraceStimButton_Click(object sender, EventArgs e)
@@ -207,7 +249,7 @@ namespace AMapTool
             List<string> list = new List<string>(targetPosTextBox.Text.Split(','));
             if (isJudgeDataStyle(list, false) == false)
             {
-                MessageBox.Show("请设置格式正确的坐标系", "错误");
+                MessageBox.Show("请设置格式正确的坐标\n例:121.093381,38.89841", "错误");
                 list.Clear();
                 return;
             }
@@ -220,8 +262,8 @@ namespace AMapTool
             }
             else
             {
-                objects[0] = GPSChange.WGS84_to_GCJ02(targetPosLat, targetPosLon).lng;
-                objects[1] = GPSChange.WGS84_to_GCJ02(targetPosLat, targetPosLon).lat;
+                objects[0] = ConvertGPS.gps84_To_Gcj02(new PointLatLng(targetPosLat, targetPosLon)).Lng;
+                objects[1] = ConvertGPS.gps84_To_Gcj02(new PointLatLng(targetPosLat, targetPosLon)).Lat;
             }
 
             webBrowser1.Document.InvokeScript("setTargetPos", objects);
@@ -257,9 +299,11 @@ namespace AMapTool
 
         private void closeTraceFileButton_Click(object sender, EventArgs e)
         {
+
             sr.Close();
             traceFileName = null;
             dirTextBox.Text = " ";
+            LogRichTextBox.Text = string.Empty;
         }
 //WGS84to高德
 //高德toWGS84
@@ -275,6 +319,101 @@ namespace AMapTool
             {
                 isWGS84RadioButton.Checked = true;
             }
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://www7.zzu.edu.cn/bsbci/");
+        }
+
+        //控件初始化
+        public void ComboBoxInit()
+        {
+            ArrayList transComboBoxList = new ArrayList();
+            transComboBoxList.Add(new DictionaryEntry(0, "WGS84转高德"));
+            transComboBoxList.Add(new DictionaryEntry(1, "高德转WGS84"));
+            transComboBoxList.Add(new DictionaryEntry(2, "WGS84转百度"));
+            transComboBoxList.Add(new DictionaryEntry(3, "百度转WGS84"));
+            transComboBoxList.Add(new DictionaryEntry(4, "高德转百度"));     
+            transComboBoxList.Add(new DictionaryEntry(5, "百度转高德"));
+            this.transComboBox.DataSource = transComboBoxList;
+            this.transComboBox.DisplayMember = "Value";
+            this.transComboBox.ValueMember = "Key";
+            this.transComboBox.SelectedIndex = 0;
+
+        }
+        //开始转换按钮
+        private void beginTransButton_Click(object sender, EventArgs e)
+        {
+            string content;
+            content = rawDataTextBox.Text.ToString();
+            List<string> list = new List<string>(content.Split(','));
+            //判断数据格式是否正确
+            if (isJudgeDataStyle(list, dataMode(list)) == false)
+            {
+                MessageBox.Show("请设置格式正确的坐标\n例:121.093381,38.89841", "错误");
+                list.Clear();
+                return;
+            }
+
+            double tempLon = Convert.ToDouble(list[0]);
+            double tempLat = Convert.ToDouble(list[1]);
+            #region
+            //transComboBoxList.Add(new DictionaryEntry(0, "WGS84转高德"));
+            //transComboBoxList.Add(new DictionaryEntry(1, "高德转WGS84"));
+            //transComboBoxList.Add(new DictionaryEntry(2, "WGS84转百度"));
+            //transComboBoxList.Add(new DictionaryEntry(3, "百度转WGS84"));
+            //transComboBoxList.Add(new DictionaryEntry(4, "高德转百度"));     
+            //transComboBoxList.Add(new DictionaryEntry(5, "百度转高德"));
+            #endregion
+            if (transComboBox.SelectedIndex == 0)
+            {
+                double Lon = ConvertGPS.gps84_To_Gcj02(new PointLatLng(tempLat, tempLon)).Lng;
+                double Lat = ConvertGPS.gps84_To_Gcj02(new PointLatLng(tempLat, tempLon)).Lat;
+                transedTextBox.Text = string.Empty;
+                transedTextBox.Text = Lon.ToString() + "," + Lat.ToString();
+            }
+            else if (transComboBox.SelectedIndex == 1)
+            {
+                double Lon = ConvertGPS.gcj02_To_Gps84(new PointLatLng(tempLat, tempLon)).Lng;
+                double Lat = ConvertGPS.gcj02_To_Gps84(new PointLatLng(tempLat, tempLon)).Lat;
+                transedTextBox.Text = string.Empty;
+                transedTextBox.Text = Lon.ToString() + "," + Lat.ToString();
+            }
+            else if (transComboBox.SelectedIndex == 2)
+            {
+                double Lon = ConvertGPS.Gps84_To_bd09(new PointLatLng(tempLat, tempLon)).Lng;
+                double Lat = ConvertGPS.Gps84_To_bd09(new PointLatLng(tempLat, tempLon)).Lat;
+                transedTextBox.Text = string.Empty;
+                transedTextBox.Text = Lon.ToString() + "," + Lat.ToString();
+            }
+            else if (transComboBox.SelectedIndex == 3)
+            {
+                double Lon = ConvertGPS.bd09_To_Gps84(new PointLatLng(tempLat, tempLon)).Lng;
+                double Lat = ConvertGPS.bd09_To_Gps84(new PointLatLng(tempLat, tempLon)).Lat;
+                transedTextBox.Text = string.Empty;
+                transedTextBox.Text = Lon.ToString() + "," + Lat.ToString();
+            }
+            else if (transComboBox.SelectedIndex == 4)
+            {
+                double Lon = ConvertGPS.gcj02_To_Bd09(new PointLatLng(tempLat, tempLon)).Lng;
+                double Lat = ConvertGPS.gcj02_To_Bd09(new PointLatLng(tempLat, tempLon)).Lat;
+                transedTextBox.Text = string.Empty;
+                transedTextBox.Text = Lon.ToString() + "," + Lat.ToString();
+            }
+            else if (transComboBox.SelectedIndex == 5)
+            {
+                double Lon = ConvertGPS.bd09_To_Gcj02(new PointLatLng(tempLat, tempLon)).Lng;
+                double Lat = ConvertGPS.bd09_To_Gcj02(new PointLatLng(tempLat, tempLon)).Lat;
+                transedTextBox.Text = string.Empty;
+                transedTextBox.Text = Lon.ToString() + "," + Lat.ToString();
+            }
+        }
+
+        private void clearTransButton_Click(object sender, EventArgs e)
+        {
+            rawDataTextBox.Text = string.Empty;
+            transedTextBox.Text = string.Empty;
         }
     }
 }

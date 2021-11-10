@@ -30,9 +30,10 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.openTraceFileButton = new System.Windows.Forms.Button();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.LogRichTextBox = new System.Windows.Forms.RichTextBox();
             this.drawTraceStimButton = new System.Windows.Forms.Button();
             this.clearTraceStimButton = new System.Windows.Forms.Button();
             this.dirTextBox = new System.Windows.Forms.TextBox();
@@ -45,16 +46,17 @@
             this.label3 = new System.Windows.Forms.Label();
             this.isAMapRadioButton = new System.Windows.Forms.RadioButton();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label5 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.transComboBox = new System.Windows.Forms.ComboBox();
+            this.clearTransButton = new System.Windows.Forms.Button();
+            this.beginTransButton = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.rawDataTextBox = new System.Windows.Forms.TextBox();
+            this.transedTextBox = new System.Windows.Forms.TextBox();
             this.isWGS84RadioButton = new System.Windows.Forms.RadioButton();
             this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.beginTransButton = new System.Windows.Forms.Button();
-            this.clearTransButton = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -69,7 +71,17 @@
             this.groupBox1.Size = new System.Drawing.Size(1581, 957);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Version 2.0";
+            this.groupBox1.Text = "Version 2.1.0";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label4.Location = new System.Drawing.Point(1476, -3);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(84, 20);
+            this.label4.TabIndex = 16;
+            this.label4.Text = "NIEM_ZZU";
             // 
             // webBrowser1
             // 
@@ -93,14 +105,14 @@
             this.openTraceFileButton.UseVisualStyleBackColor = true;
             this.openTraceFileButton.Click += new System.EventHandler(this.openTraceFileButton_Click);
             // 
-            // richTextBox1
+            // LogRichTextBox
             // 
-            this.richTextBox1.Font = new System.Drawing.Font("微软雅黑", 6.6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.richTextBox1.Location = new System.Drawing.Point(1613, 821);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(275, 128);
-            this.richTextBox1.TabIndex = 3;
-            this.richTextBox1.Text = "";
+            this.LogRichTextBox.Font = new System.Drawing.Font("微软雅黑", 6.6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.LogRichTextBox.Location = new System.Drawing.Point(1613, 821);
+            this.LogRichTextBox.Name = "LogRichTextBox";
+            this.LogRichTextBox.Size = new System.Drawing.Size(275, 128);
+            this.LogRichTextBox.TabIndex = 3;
+            this.LogRichTextBox.Text = "";
             // 
             // drawTraceStimButton
             // 
@@ -175,7 +187,7 @@
             // setTargetPosButton
             // 
             this.setTargetPosButton.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.setTargetPosButton.Location = new System.Drawing.Point(1612, 404);
+            this.setTargetPosButton.Location = new System.Drawing.Point(1753, 399);
             this.setTargetPosButton.Name = "setTargetPosButton";
             this.setTargetPosButton.Size = new System.Drawing.Size(135, 45);
             this.setTargetPosButton.TabIndex = 11;
@@ -186,7 +198,7 @@
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button1.Location = new System.Drawing.Point(1752, 404);
+            this.button1.Location = new System.Drawing.Point(1611, 399);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(135, 45);
             this.button1.TabIndex = 12;
@@ -220,30 +232,98 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label8);
+            this.groupBox2.Controls.Add(this.transComboBox);
             this.groupBox2.Controls.Add(this.clearTransButton);
             this.groupBox2.Controls.Add(this.beginTransButton);
             this.groupBox2.Controls.Add(this.label7);
             this.groupBox2.Controls.Add(this.label6);
-            this.groupBox2.Controls.Add(this.textBox2);
-            this.groupBox2.Controls.Add(this.textBox1);
+            this.groupBox2.Controls.Add(this.rawDataTextBox);
+            this.groupBox2.Controls.Add(this.transedTextBox);
             this.groupBox2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.groupBox2.Location = new System.Drawing.Point(1614, 544);
+            this.groupBox2.Location = new System.Drawing.Point(1611, 471);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(274, 214);
             this.groupBox2.TabIndex = 15;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "坐标转换工具";
-            this.groupBox2.Visible = false;
             // 
-            // label5
+            // label8
             // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label5.Location = new System.Drawing.Point(1609, 952);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(279, 20);
-            this.label5.TabIndex = 17;
-            this.label5.Text = "河南省脑科学与脑机接口技术重点实验室";
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(6, 29);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(84, 20);
+            this.label8.TabIndex = 25;
+            this.label8.Text = "转换选项：";
+            // 
+            // transComboBox
+            // 
+            this.transComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.transComboBox.FormattingEnabled = true;
+            this.transComboBox.Location = new System.Drawing.Point(118, 26);
+            this.transComboBox.Name = "transComboBox";
+            this.transComboBox.Size = new System.Drawing.Size(150, 28);
+            this.transComboBox.TabIndex = 24;
+            // 
+            // clearTransButton
+            // 
+            this.clearTransButton.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.clearTransButton.Location = new System.Drawing.Point(7, 173);
+            this.clearTransButton.Name = "clearTransButton";
+            this.clearTransButton.Size = new System.Drawing.Size(83, 35);
+            this.clearTransButton.TabIndex = 23;
+            this.clearTransButton.Text = "清除";
+            this.clearTransButton.UseVisualStyleBackColor = true;
+            this.clearTransButton.Click += new System.EventHandler(this.clearTransButton_Click);
+            // 
+            // beginTransButton
+            // 
+            this.beginTransButton.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.beginTransButton.Location = new System.Drawing.Point(185, 173);
+            this.beginTransButton.Name = "beginTransButton";
+            this.beginTransButton.Size = new System.Drawing.Size(83, 35);
+            this.beginTransButton.TabIndex = 22;
+            this.beginTransButton.Text = "转换";
+            this.beginTransButton.UseVisualStyleBackColor = true;
+            this.beginTransButton.Click += new System.EventHandler(this.beginTransButton_Click);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label7.Location = new System.Drawing.Point(6, 117);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(99, 20);
+            this.label7.TabIndex = 21;
+            this.label7.Text = "转换后坐标：";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label6.Location = new System.Drawing.Point(6, 55);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(84, 20);
+            this.label6.TabIndex = 19;
+            this.label6.Text = "原始坐标：";
+            // 
+            // rawDataTextBox
+            // 
+            this.rawDataTextBox.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.rawDataTextBox.Location = new System.Drawing.Point(6, 78);
+            this.rawDataTextBox.Name = "rawDataTextBox";
+            this.rawDataTextBox.Size = new System.Drawing.Size(262, 27);
+            this.rawDataTextBox.TabIndex = 20;
+            // 
+            // transedTextBox
+            // 
+            this.transedTextBox.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.transedTextBox.Location = new System.Drawing.Point(6, 140);
+            this.transedTextBox.Name = "transedTextBox";
+            this.transedTextBox.ReadOnly = true;
+            this.transedTextBox.Size = new System.Drawing.Size(262, 27);
+            this.transedTextBox.TabIndex = 19;
             // 
             // isWGS84RadioButton
             // 
@@ -260,71 +340,17 @@
             this.isWGS84RadioButton.UseVisualStyleBackColor = true;
             this.isWGS84RadioButton.Click += new System.EventHandler(this.isWGS84RadioButton_Click);
             // 
-            // textBox1
+            // linkLabel1
             // 
-            this.textBox1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.textBox1.Location = new System.Drawing.Point(6, 140);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(262, 27);
-            this.textBox1.TabIndex = 19;
-            // 
-            // textBox2
-            // 
-            this.textBox2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.textBox2.Location = new System.Drawing.Point(6, 78);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(262, 27);
-            this.textBox2.TabIndex = 20;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label6.Location = new System.Drawing.Point(6, 55);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(84, 20);
-            this.label6.TabIndex = 19;
-            this.label6.Text = "原始坐标：";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label7.Location = new System.Drawing.Point(6, 117);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(99, 20);
-            this.label7.TabIndex = 21;
-            this.label7.Text = "转换后坐标：";
-            // 
-            // beginTransButton
-            // 
-            this.beginTransButton.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.beginTransButton.Location = new System.Drawing.Point(185, 173);
-            this.beginTransButton.Name = "beginTransButton";
-            this.beginTransButton.Size = new System.Drawing.Size(83, 35);
-            this.beginTransButton.TabIndex = 22;
-            this.beginTransButton.Text = "转换";
-            this.beginTransButton.UseVisualStyleBackColor = true;
-            // 
-            // clearTransButton
-            // 
-            this.clearTransButton.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.clearTransButton.Location = new System.Drawing.Point(7, 173);
-            this.clearTransButton.Name = "clearTransButton";
-            this.clearTransButton.Size = new System.Drawing.Size(83, 35);
-            this.clearTransButton.TabIndex = 23;
-            this.clearTransButton.Text = "清除";
-            this.clearTransButton.UseVisualStyleBackColor = true;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label4.Location = new System.Drawing.Point(1476, -3);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(84, 20);
-            this.label4.TabIndex = 16;
-            this.label4.Text = "NIEM_ZZU";
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.linkLabel1.Location = new System.Drawing.Point(1610, 952);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(279, 20);
+            this.linkLabel1.TabIndex = 19;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "河南省脑科学与脑机接口技术重点实验室";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // Form1
             // 
@@ -332,8 +358,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1900, 981);
+            this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.isWGS84RadioButton);
-            this.Controls.Add(this.label5);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.isAMapRadioButton);
             this.Controls.Add(this.label3);
@@ -346,7 +372,7 @@
             this.Controls.Add(this.dirTextBox);
             this.Controls.Add(this.clearTraceStimButton);
             this.Controls.Add(this.drawTraceStimButton);
-            this.Controls.Add(this.richTextBox1);
+            this.Controls.Add(this.LogRichTextBox);
             this.Controls.Add(this.openTraceFileButton);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -356,7 +382,7 @@
             this.MinimumSize = new System.Drawing.Size(1707, 783);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "显示轨迹与刺激点工具(v2.0)";
+            this.Text = "显示轨迹与刺激点工具(v2.1.0)";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);
@@ -373,7 +399,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.WebBrowser webBrowser1;
         private System.Windows.Forms.Button openTraceFileButton;
-        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.RichTextBox LogRichTextBox;
         private System.Windows.Forms.Button drawTraceStimButton;
         private System.Windows.Forms.Button clearTraceStimButton;
         private System.Windows.Forms.TextBox dirTextBox;
@@ -386,16 +412,18 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.RadioButton isAMapRadioButton;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.RadioButton isWGS84RadioButton;
         private System.DirectoryServices.DirectoryEntry directoryEntry1;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox rawDataTextBox;
+        private System.Windows.Forms.TextBox transedTextBox;
         private System.Windows.Forms.Button clearTransButton;
         private System.Windows.Forms.Button beginTransButton;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ComboBox transComboBox;
+        private System.Windows.Forms.LinkLabel linkLabel1;
     }
 }
 
