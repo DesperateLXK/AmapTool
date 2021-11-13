@@ -71,7 +71,7 @@
             this.groupBox1.Size = new System.Drawing.Size(1581, 957);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Version 2.1.0";
+            this.groupBox1.Text = "Version 2.1.2";
             // 
             // label4
             // 
@@ -82,6 +82,7 @@
             this.label4.Size = new System.Drawing.Size(84, 20);
             this.label4.TabIndex = 16;
             this.label4.Text = "NIEM_ZZU";
+            this.label4.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.label4_MouseDoubleClick);
             // 
             // webBrowser1
             // 
@@ -157,6 +158,7 @@
             // 
             // closeTraceFileButton
             // 
+            this.closeTraceFileButton.Enabled = false;
             this.closeTraceFileButton.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.closeTraceFileButton.Location = new System.Drawing.Point(1753, 21);
             this.closeTraceFileButton.Name = "closeTraceFileButton";
@@ -382,7 +384,7 @@
             this.MinimumSize = new System.Drawing.Size(1707, 783);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "显示轨迹与刺激点工具(v2.1.0)";
+            this.Text = "显示轨迹与刺激点工具(v2.1.2)";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);

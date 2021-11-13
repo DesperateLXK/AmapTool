@@ -42,23 +42,42 @@ namespace AMapTool
             dialog.Multiselect = false;//允许打开多个文件
             dialog.DefaultExt = ".txt";//打开文件时显示的可选文件类型
             dialog.Filter = "轨迹文件(*.txt)|*.txt|所有文件(*.*)|*.*";//打开多个文件
-            if (dialog.ShowDialog() == DialogResult.OK)
+            DialogResult returnResult =  dialog.ShowDialog();
+            if (returnResult == DialogResult.OK)
             {
                 //MessageBox.Show("文件打开成功","通知");
                 return dialog.FileName;
             }
-            else
+            else if (returnResult == DialogResult.Cancel)
             {
                 //MessageBox.Show("返回文件路径失败");
+                return " ";
+            }
+            else
+            {
                 return null;
             }
+            
         }
         string traceFileName;
         private void openTraceFileButton_Click(object sender, EventArgs e)
         {
             traceFileName = OpenFiles();
-            sr = new StreamReader(traceFileName);
+            if (traceFileName != null)
+            {
+                if (traceFileName == " ")
+                {
+                    return;
+                }
+                else
+                {
+                    closeTraceFileButton.Enabled = true;
+                    sr = new StreamReader(traceFileName);
+                }
+
+            }
             dirTextBox.Text = traceFileName;
+
         }
         //数据格式
         struct wgs84LonLatStimStart
@@ -299,7 +318,8 @@ namespace AMapTool
 
         private void closeTraceFileButton_Click(object sender, EventArgs e)
         {
-
+            webBrowser1.Document.InvokeScript("removeMarkers");
+            closeTraceFileButton.Enabled = false;
             sr.Close();
             traceFileName = null;
             dirTextBox.Text = " ";
@@ -342,6 +362,12 @@ namespace AMapTool
             this.transComboBox.SelectedIndex = 0;
 
         }
+        #region
+        private void label4_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            MessageBox.Show("Author:  LXK\nDate:  2021.10", "GoodLuck!");
+        }
+        #endregion
         //开始转换按钮
         private void beginTransButton_Click(object sender, EventArgs e)
         {
@@ -415,5 +441,7 @@ namespace AMapTool
             rawDataTextBox.Text = string.Empty;
             transedTextBox.Text = string.Empty;
         }
+
+
     }
 }
